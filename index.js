@@ -54,6 +54,19 @@ function apply() {
 html, body { background-color: ${p.bg} !important; }
 #bg1, #bg_custom { background-color: ${p.bg} !important; }
 `;
+    const vars = {
+        "--SmartThemeBodyColor": p.body, "--SmartThemeEmColor": p.em,
+        "--SmartThemeBlurTintColor": p.blur, "--SmartThemeChatTintColor": p.chat,
+        "--SmartThemeUserMesBlurTintColor": p.user, "--SmartThemeBotMesBlurTintColor": p.bot,
+        "--SmartThemeBorderColor": p.border, "--SmartThemeShadowColor": p.shadow,
+        "--SmartThemeQuoteColor": p.quote
+    };
+    for (const [k, v] of Object.entries(vars)) {
+        document.documentElement.style.setProperty(k, v, "important");
+    }
+    document.documentElement.style.setProperty("color-scheme", p.scheme, "important");
+    document.documentElement.dataset.aldMode = effective();
+
     let meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) {
         meta = document.createElement("meta");
@@ -65,7 +78,7 @@ html, body { background-color: ${p.bg} !important; }
 
 jQuery(async () => {
     try {
-        $("#extensions_settings2").append(await $.get(`${folder}/setting.html?v=1.0.0`));
+        $("#extensions_settings2").append(await $.get(`${folder}/setting.html?v=1.0.1`));
     } catch (e) {
         console.warn("[autolightdark] setting.html error", e);
     }
@@ -76,5 +89,8 @@ jQuery(async () => {
     });
     mq.addEventListener("change", apply);
     apply();
+    setTimeout(apply, 1500);
+    setTimeout(apply, 4000);
+    document.addEventListener("visibilitychange", apply);
     console.log("[autolightdark] loaded");
 });
